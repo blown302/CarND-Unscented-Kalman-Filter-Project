@@ -10,3 +10,4 @@ CMakeScripts
 UnscentedKF.build
 UnscentedKF.xcodeproj
 cmake_install.cmake
+Debug

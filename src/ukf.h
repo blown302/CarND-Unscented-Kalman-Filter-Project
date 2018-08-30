@@ -67,6 +67,12 @@ public:
     ///* Number of sigma point columns
     int n_sig_columns_;
     
+    ///* Vector size radar measurement
+    int n_radar;
+    
+    ///* Vector size lidar measurement
+    int n_lidar;
+    
     ///* Sigma point spreading parameter
     double lambda_;
     
