@@ -129,6 +129,8 @@ public:
      */
     void UpdateRadar(MeasurementPackage meas_package);
 private:
+    NisTracker nis_lidar;
+    NisTracker nis_radar;
     /**
      * Sets the first measurement of the UKF.
      * @param meas_package The measurement
@@ -150,7 +152,7 @@ private:
      * @param {double} angle
      * @returns {float} new angle
     */
-    float NormalizeAngle(double angle);
+    double NormalizeAngle(double angle);
 };
 
 #endif /* UKF_H */

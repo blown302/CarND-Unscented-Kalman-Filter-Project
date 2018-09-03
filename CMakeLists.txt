@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 set(sources src/ukf.cpp src/main.cpp src/tools.cpp src/nis_tracker.cpp)
 
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 include_directories(/usr/local/include)
 include_directories(/usr/local/opt/openssl/include)

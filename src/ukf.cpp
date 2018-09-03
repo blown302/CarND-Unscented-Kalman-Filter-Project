@@ -87,7 +87,7 @@ UKF::UKF() {
     0, 0, std_radrd_*std_radrd_;
 }
 
-UKF::~UKF() {}
+UKF::~UKF() = default;
 
 /**
  * @param {MeasurementPackage} meas_package The latest measurement data of
@@ -189,8 +189,9 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     // Calulate NIS
     VectorXd z_diff = z_pred - meas_package.raw_measurements_;
     float nis = z_diff.transpose() * S.inverse() * z_diff;
+    nis_lidar.add(nis);
     
-    cout << "NIS value for LIDAR: " << nis << endl;
+    cout << "NIS value for LIDAR: " << nis << " running average " << nis_lidar.average() << endl;
 }
 
 /**
@@ -267,8 +268,9 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     
     // Calulate NIS
     float nis = z_diff.transpose() * S.inverse() * z_diff;
+    nis_radar.add(nis);
     
-    cout << "NIS value for RADAR: " << nis << endl;
+    cout << "NIS value for RADAR: " << nis <<  " running average " << nis_radar.average() << endl;
 }
 
 /**
@@ -349,17 +351,14 @@ bool UKF::IsMeasurementEnabled(MeasurementPackage::SensorType type) {
     switch (type) {
         case MeasurementPackage::SensorType::LASER:
             return use_laser_;
-            break;
         case MeasurementPackage::SensorType::RADAR:
             return use_radar_;
-            break;
         default:
             return false;
-            break;
     }
 }
 
-float UKF::NormalizeAngle(double angle) {
+double UKF::NormalizeAngle(double angle) {
     while (abs(angle) > M_PI) {
         if (angle > M_PI) {
             angle -= 2 * M_PI;

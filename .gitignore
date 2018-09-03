@@ -12,3 +12,4 @@ UnscentedKF.xcodeproj
 cmake_install.cmake
 Debug
 Release
+.idea
