@@ -11,7 +11,7 @@ using std::vector;
  * Initializes Unscented Kalman filter
  * This is scaffolding, do not modify
  */
-UKF::UKF() {
+UKF::UKF() : nis_lidar(.103, 5.991), nis_radar(.352, 7.815) {
     // if this is false, laser measurements will be ignored (except during init)
     use_laser_ = true;
     
@@ -44,23 +44,16 @@ UKF::UKF() {
     P_ = MatrixXd(n_x_, n_x_);
     
     // Process noise standard deviation longitudinal acceleration in m/s^2
-    std_a_ = 3;
+    std_a_ = .4;
     
     // Process noise standard deviation yaw acceleration in rad/s^2
-    std_yawdd_ = 3;
+    std_yawdd_ = .4;
     
-    // set lamda value for spread of sigma points.
+    // set lambda value for spread of sigma points.
     lambda_ = 3 - n_aug_;
-    
-    p_init_ = 1;
-    
-    // init process co-varience.
-    P_ = MatrixXd(n_x_, n_x_);
-    P_ << p_init_, 0, 0, 0, 0,
-        0, p_init_, 0, 0, 0,
-        0, 0, p_init_, 0, 0,
-        0, 0, 0, p_init_, 0,
-        0, 0, 0, 0, p_init_;
+
+    // init process covarience.
+    P_ = MatrixXd::Identity(n_x_, n_x_);
     
     // set weights
     weights_ = VectorXd(n_sig_columns_);
@@ -191,7 +184,8 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     float nis = z_diff.transpose() * S.inverse() * z_diff;
     nis_lidar.add(nis);
     
-    cout << "NIS value for LIDAR: " << nis << " running average " << nis_lidar.average() << endl;
+    cout << "NIS value for LIDAR: " << nis << " running average " << nis_lidar.average()
+    << " running violation count " << nis_lidar.get_violations() << endl;
 }
 
 /**
@@ -270,7 +264,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     float nis = z_diff.transpose() * S.inverse() * z_diff;
     nis_radar.add(nis);
     
-    cout << "NIS value for RADAR: " << nis <<  " running average " << nis_radar.average() << endl;
+    cout << "NIS value for RADAR: " << nis <<  " running average " << nis_radar.average()
+    << " running violation count " << nis_radar.get_violations() << endl;
 }
 
 /**

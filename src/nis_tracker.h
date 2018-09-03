@@ -14,13 +14,14 @@ using namespace std;
 
 class NisTracker {
 public:
-    NisTracker();
-    void add(float nis_rating);
-    float average();
+    NisTracker(double low_limit, double high_limit);
+    void add(double nis_rating);
+    double average();
+    int get_violations();
 private:
-    vector<float> history_;
+    int violation_count_;
+    double high_limit_, low_limit_;
+    vector<double> history_;
 };
-
-
 
 #endif /* NIS_TRACKER_H */

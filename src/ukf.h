@@ -79,9 +79,6 @@ public:
     ///* Sigma point spreading parameter
     double lambda_;
     
-    ///* process co-varience init value
-    double p_init_;
-    
     ///* timestamp of previous time step.
     double previous_timestamp_;
     
