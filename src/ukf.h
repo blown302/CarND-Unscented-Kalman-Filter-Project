@@ -2,6 +2,7 @@
 #define UKF_H
 
 #include "measurement_package.h"
+#include "nis_tracker.h"
 #include "Eigen/Dense"
 #include <vector>
 #include <string>
@@ -40,20 +41,22 @@ public:
     ///* Process noise standard deviation yaw acceleration in rad/s^2
     double std_yawdd_;
     
-    ///* Laser measurement noise standard deviation position1 in m
-    double std_laspx_;
+    //DO NOT MODIFY measurement noise values below these are provided by the sensor manufacturer.
+    // Laser measurement noise standard deviation position1 in m
+    static constexpr double std_laspx_ = 0.15;
     
-    ///* Laser measurement noise standard deviation position2 in m
-    double std_laspy_;
+    // Laser measurement noise standard deviation position2 in m
+    static constexpr double std_laspy = 0.15;
     
-    ///* Radar measurement noise standard deviation radius in m
-    double std_radr_;
+    // Radar measurement noise standard deviation radius in m
+    static constexpr double std_radr_ = 0.3;
     
-    ///* Radar measurement noise standard deviation angle in rad
-    double std_radphi_;
+    // Radar measurement noise standard deviation angle in rad
+    static constexpr double std_radphi_ = 0.03;
     
-    ///* Radar measurement noise standard deviation radius change in m/s
-    double std_radrd_ ;
+    // Radar measurement noise standard deviation radius change in m/s
+    static constexpr double std_radrd_ = 0.3;
+    //DO NOT MODIFY measurement noise values above these are provided by the sensor manufacturer.
     
     ///* Weights of sigma points
     VectorXd weights_;

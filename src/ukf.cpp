@@ -49,33 +49,6 @@ UKF::UKF() {
     // Process noise standard deviation yaw acceleration in rad/s^2
     std_yawdd_ = 3;
     
-    //DO NOT MODIFY measurement noise values below these are provided by the sensor manufacturer.
-    // Laser measurement noise standard deviation position1 in m
-    std_laspx_ = 0.15;
-    
-    // Laser measurement noise standard deviation position2 in m
-    std_laspy_ = 0.15;
-    
-    // Radar measurement noise standard deviation radius in m
-    std_radr_ = 0.3;
-    
-    // Radar measurement noise standard deviation angle in rad
-    std_radphi_ = 0.03;
-    
-    // Radar measurement noise standard deviation radius change in m/s
-    std_radrd_ = 0.3;
-    //DO NOT MODIFY measurement noise values above these are provided by the sensor manufacturer.
-    
-    
-    
-    /**
-     TODO:
-     
-     Complete the initialization. See ukf.h for other member properties.
-     
-     Hint: one or more values initialized above might be wildly off...
-     */
-    
     // set lamda value for spread of sigma points.
     lambda_ = 3 - n_aug_;
     
@@ -206,6 +179,12 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     long x_size = x_.size();
     MatrixXd I = MatrixXd::Identity(x_size, x_size);
     P_ = (I - K * H_) * P_;
+    
+    // Calulate NIS
+    VectorXd z_diff = z_pred - meas_package.raw_measurements_;
+    float nis = z_diff.transpose() * S.inverse() * z_diff;
+    
+    cout << "NIS value for LIDAR: " << nis << endl;
 }
 
 /**
@@ -288,6 +267,11 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     
     x_ += K * z_diff;
     P_ -= K * S * K.transpose();
+    
+    // Calulate NIS
+    float nis = z_diff.transpose() * S.inverse() * z_diff;
+    
+    cout << "NIS value for RADAR: " << nis << endl;
 }
 
 /**
