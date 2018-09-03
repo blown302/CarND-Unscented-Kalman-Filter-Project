@@ -186,10 +186,6 @@ void UKF::Prediction(double delta_t) {
         
         P_ += weights_(i) * x_diff * x_diff.transpose();
     }
-    
-    cout << "predicted process covarience:\n" << P_ << endl;
-    
-    cout << "prediction step completed" << endl;
 }
 
 /**
@@ -197,15 +193,6 @@ void UKF::Prediction(double delta_t) {
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
-    /**
-     TODO:
-     
-     Complete this function! Use lidar data to update the belief about the object's
-     position. Modify the state vector, x_, and covariance, P_.
-     
-     You'll also need to calculate the lidar NIS.
-     */
-    
     VectorXd z_pred = H_ * x_;
     VectorXd y = meas_package.raw_measurements_ - z_pred;
     MatrixXd Ht = H_.transpose();
@@ -226,17 +213,6 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateRadar(MeasurementPackage meas_package) {
-    /**
-     TODO:
-     
-     Complete this function! Use radar data to update the belief about the object's
-     position. Modify the state vector, x_, and covariance, P_.
-     
-     You'll also need to calculate the radar NIS.
-     */
-    
-    cout << "updating radar measurement" << endl;
-    
     //transform sigma points into measurement space
     //create matrix for sigma points in measurement space
     MatrixXd Zsig(n_radar, n_sig_columns_);
@@ -312,10 +288,6 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     
     x_ += K * z_diff;
     P_ -= K * S * K.transpose();
-    
-    cout << "state after radar update:\n" << x_ << endl;
-    cout << "process covarience after radar update:\n" << P_ << endl;
-    cout << "radar update complete" << endl;
 }
 
 /**
@@ -343,8 +315,6 @@ void UKF::FirstMeasurement(MeasurementPackage meas_package) {
  * @param {MatrixXd} Xsig_aug
  */
 void UKF::PredictSigmaPoints(MatrixXd& Xsig_aug, double delta_t) {
-    cout << "predicting sigma points" << endl;
-    
     // Predict sigma points k + 1
     for (int i = 0; i < n_sig_columns_; i++) {
         //extract values for better readability
