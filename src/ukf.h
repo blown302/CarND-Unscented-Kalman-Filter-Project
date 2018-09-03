@@ -79,6 +79,14 @@ public:
     ///* process co-varience init value
     double p_init_;
     
+    ///* timestamp of previous time step.
+    double previous_timestamp_;
+    
+    ///* Linear measurement matrix for linear measurements
+    MatrixXd H_;
+    
+    ///* Linear measurement covariance matrix for linear measurements
+    MatrixXd R_;
     
     /**
      * Constructor
@@ -125,7 +133,18 @@ private:
      * @param {MatrixXd} Xsig_aug
      * @param {MatrixXd} Xsig_aug
      */
-    void PredictSigmaPoints(MatrixXd& Xsig_aug, long delta_t);
+    void PredictSigmaPoints(MatrixXd& Xsig_aug, double delta_t);
+    /**
+     * Predicts determines if measurement is supported baesd on implementation support and configuration
+     * @returns {bool}
+     */
+    bool IsMeasurementEnabled(MeasurementPackage::SensorType type);
+    /**
+     * Normalizes an angle between pi and -pi
+     * @param {double} angle
+     * @returns {float} new angle
+    */
+    float NormalizeAngle(double angle);
 };
 
 #endif /* UKF_H */
