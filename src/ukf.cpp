@@ -76,9 +76,15 @@ UKF::UKF() {
     0, 1, 0, 0, 0;
     
     // Linear measurement covariance matrix for lidar
-    R_ = MatrixXd(2, 2);
-    R_ << 0.0225, 0,
-        0, 0.0225;
+    R_laser_ = MatrixXd(2, 2);
+    R_laser_ << std_laspx_*std_laspx_, 0,
+        0, std_laspy*std_laspy;
+    
+    // Calculate radar noise matrix
+    R_radar_ = MatrixXd(n_radar, n_radar);
+    R_radar_ << std_radr_*std_radr_, 0, 0,
+    0, std_radphi_*std_radphi_, 0,
+    0, 0, std_radrd_*std_radrd_;
 }
 
 UKF::~UKF() {}
@@ -169,7 +175,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     VectorXd z_pred = H_ * x_;
     VectorXd y = meas_package.raw_measurements_ - z_pred;
     MatrixXd Ht = H_.transpose();
-    MatrixXd S = H_ * P_ * Ht + R_;
+    MatrixXd S = H_ * P_ * Ht + R_laser_;
     MatrixXd Si = S.inverse();
     MatrixXd PHt = P_ * Ht;
     MatrixXd K = PHt * Si;
@@ -224,21 +230,12 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     for (int i = 0; i < n_sig_columns_; i++) {
         VectorXd z_diff = Zsig.col(i) - z_pred;
         
-        //angle normalization
-//        while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
-//        while (z_diff(1)<-M_PI) z_diff(1)+=2.*M_PI;
         z_diff(1) = NormalizeAngle(z_diff(1));
         
         S += weights_(i) * z_diff * z_diff.transpose();
     }
     
-    // Calculate radar noise matrix
-    MatrixXd R = MatrixXd(n_radar, n_radar);
-    R << std_radr_*std_radr_, 0, 0,
-    0, std_radphi_*std_radphi_, 0,
-    0, 0, std_radrd_*std_radrd_;
-    
-    S += R;
+    S += R_radar_;
     
     // Create matrix for cross correlation Tc
     MatrixXd Tc(n_x_, n_radar);

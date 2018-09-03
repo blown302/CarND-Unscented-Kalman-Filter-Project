@@ -88,8 +88,11 @@ public:
     ///* Linear measurement matrix for linear measurements
     MatrixXd H_;
     
-    ///* Linear measurement covariance matrix for linear measurements
-    MatrixXd R_;
+    ///* Laser noise matrix
+    MatrixXd R_laser_;
+    
+    ///* Radar noise Matrix
+    MatrixXd R_radar_;
     
     /**
      * Constructor
